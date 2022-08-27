@@ -676,6 +676,27 @@ namespace XIVComboPlugin
                 }
             }
 
+            if (Configuration.ComboPresets.HasFlag(CustomComboPreset.DancerSgtGcdFeature))
+            {
+                if (actionID == DNC.FountainFall)
+                {
+                    if (HasBuff(DNC.DancingBuffs))
+                        return DNC.Pirouette;
+                    if (SearchBuffArray(DNC.BuffFlourishingFlow) || SearchBuffArray(DNC.BuffSilkenFlow))
+                        return DNC.FountainFall;
+                    return DNC.Fountain;
+                }
+
+                if (actionID == DNC.ReverseCascade)
+                {
+                    if (HasBuff(DNC.DancingBuffs))
+                        return DNC.Jete;
+                    if (SearchBuffArray(DNC.BuffFlourishingSymmetry) || SearchBuffArray(DNC.BuffSilkenSymmetry))
+                        return DNC.ReverseCascade;
+                    return DNC.Cascade;
+                }
+            }
+
             // Fan Dance changes into Fan Dance 3 while flourishing.
             if (Configuration.ComboPresets.HasFlag(CustomComboPreset.DancerFanDanceCombo))
             {
@@ -763,7 +784,57 @@ namespace XIVComboPlugin
                 }
 
             // MONK
-            // haha you get nothing now
+            /*
+            if (Configuration.ComboPresets.HasFlag(CustomComboPreset.MonkLeadenFistComboFeature))
+            {
+                if (
+                    Array.Exists(
+                        new uint[] { MNK.Bootshine, MNK.DragonKick },
+                        action => action == actionID
+                    )
+                ) {
+                    if (
+                        SearchBuffArray(MNK.PerfectBalance)
+                        || (SearchBuffArray(MNK.OpoOpoForm) && !SearchBuffArray(MNK.LeadenFist))
+                        && level >= 50
+                    ) {
+                        return MNK.DragonKick;
+                    }
+
+                    return MNK.Bootshine;
+                }
+            }
+
+            if (Configuration.ComboPresets.HasFlag(CustomComboPreset.MonkAoeComboFeature))
+            {
+                if (
+                    Array.Exists(
+                        new uint[] {MNK.ArmOfTheDestroyer, MNK.FourpointFury, MNK.Rockbreaker},
+                        action => action == actionID
+                    )
+                ){
+                    if (SearchBuffArray(MNK.RaptorForm))
+                    {
+                        if (level >= 45)
+                        {
+                            return MNK.FourpointFury;
+                        }
+
+                        return MNK.TwinSnakes;
+                    }
+
+                    if (
+                        (SearchBuffArray(MNK.PerfectBalance) || SearchBuffArray((MNK.CoeurlForm)))
+                        && level >= 30
+                    )
+                    {
+                        return MNK.Rockbreaker;
+                    }
+
+                    return MNK.ArmOfTheDestroyer;
+                }
+            }
+            */
 
             // RED MAGE
 
@@ -900,6 +971,15 @@ namespace XIVComboPlugin
                 if (buffs[i].StatusId == needle)
                     return true;
             return false;
-        }        
+        }
+        
+        private bool HasBuff(ushort[] buffs)
+        {
+            foreach (var buff in buffs) 
+                if (SearchBuffArray(buff))
+                    return true;
+
+            return false;
+        }
     }
 }
