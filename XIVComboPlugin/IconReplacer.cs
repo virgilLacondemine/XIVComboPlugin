@@ -8,6 +8,7 @@ using Dalamud.Game.ClientState.JobGauge.Enums;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Logging;
 using Dalamud.Data;
+using Dalamud.Game.ClientState.Statuses;
 
 namespace XIVComboPlugin
 {
@@ -245,6 +246,25 @@ namespace XIVComboPlugin
 
             // Replace Requiescat with Confiteor when under the effect of Requiescat
             if (Configuration.ComboPresets.HasFlag(CustomComboPreset.PaladinRequiescatCombo))
+            {
+                if (actionID == PLD.HolySpirit)
+                {
+                    var requiescatBuff = GetBuff(PLD.BuffRequiescat);
+                    if (SearchBuffArray(PLD.BuffRequiescat) && level >= 80 && requiescatBuff.StackCount == 1)
+                        return PLD.Confiteor;
+
+                    if (SearchBuffArray(PLD.BuffBladeOfFaithReady))
+                        return PLD.BladeOfFaith;
+
+                    if (lastMove == PLD.BladeOfFaith)
+                        return PLD.BladeOfTruth;
+
+                    if (lastMove == PLD.BladeOfTruth)
+                        return PLD.BladeOfValor;
+
+                    return PLD.HolySpirit;
+                }
+
                 if (actionID == PLD.Requiescat)
                 {
                     if (SearchBuffArray(PLD.BuffRequiescat) && level >= 80)
@@ -261,6 +281,7 @@ namespace XIVComboPlugin
 
                     return PLD.Requiescat;
                 }
+            }
 
             // WARRIOR
 
@@ -980,6 +1001,16 @@ namespace XIVComboPlugin
                     return true;
 
             return false;
+        }
+
+        private Status GetBuff(ushort needle)
+        {
+            if (needle == 0) return null;
+            var buffs = clientState.LocalPlayer.StatusList;
+            for (var i = 0; i < buffs.Length; i++)
+                if (buffs[i].StatusId == needle)
+                    return buffs[i];
+            return null;
         }
     }
 }

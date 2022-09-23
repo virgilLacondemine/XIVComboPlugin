@@ -14,7 +14,8 @@
             Confiteor = 16459,
             BladeOfFaith = 25748,
             BladeOfTruth = 25749,
-            BladeOfValor = 25750;
+            BladeOfValor = 25750,
+            HolySpirit = 7384;
 
         public const ushort
             BuffRequiescat = 1368,
